@@ -441,7 +441,7 @@ MonoBehaviour:
   _targets:
   - {fileID: 548611106}
   - {fileID: 1203835728}
-  _offset: {x: 0, y: 0, z: -0.35}
+  _offset: {x: 0, y: -12, z: -0.35}
   _smoothTime: 0.5
   _minZoom: 50
   _maxZoom: 20
@@ -870,6 +870,8 @@ MonoBehaviour:
   _rb2D: {fileID: 1026152622}
   _leftLegRb2D: {fileID: 483155217}
   _rightLegRb2D: {fileID: 59182358}
+  _leftArmHJ2D: {fileID: 2071506202}
+  _rightArmHJ2D: {fileID: 807216203}
   _face: {fileID: 645265908}
   _faceSprites:
   - {fileID: -695242792, guid: c275a461e90c4624b8395787f248101f, type: 3}
@@ -878,8 +880,11 @@ MonoBehaviour:
   - {fileID: 1444188109, guid: c275a461e90c4624b8395787f248101f, type: 3}
   _speed: 1500
   _jumpForce: 140
+  _timeToStraightenHands: 0.2
   _gravity: 9180
   _emoteTime: 2
+  _straightZRotArmsToRight: -90
+  _straightZRotArmsToLeft: 90
   _stepWait: 0.5
   _walkLeftAnimationName: anim_walk_left
   _walkRightAnimationName: anim_walk_right
@@ -889,6 +894,7 @@ MonoBehaviour:
   _groundCheckRadius: 0.3
   _groundCheckOffset: 8.5
   _isGrounded: 0
+  targetValue: 0
 --- !u!114 &536708911
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2133,6 +2139,8 @@ MonoBehaviour:
   _rb2D: {fileID: 1203835725}
   _leftLegRb2D: {fileID: 1480018330}
   _rightLegRb2D: {fileID: 776120571}
+  _leftArmHJ2D: {fileID: 740100949}
+  _rightArmHJ2D: {fileID: 1772940241}
   _face: {fileID: 1271239068}
   _faceSprites:
   - {fileID: -695242792, guid: c275a461e90c4624b8395787f248101f, type: 3}
@@ -2141,8 +2149,11 @@ MonoBehaviour:
   - {fileID: 1444188109, guid: c275a461e90c4624b8395787f248101f, type: 3}
   _speed: 1500
   _jumpForce: 140
+  _timeToStraightenHands: 0.2
   _gravity: 9180
   _emoteTime: 2
+  _straightZRotArmsToRight: -90
+  _straightZRotArmsToLeft: 90
   _stepWait: 0.5
   _walkLeftAnimationName: anim_walk_left
   _walkRightAnimationName: anim_walk_right
@@ -2152,6 +2163,7 @@ MonoBehaviour:
   _groundCheckRadius: 0.3
   _groundCheckOffset: 8.5
   _isGrounded: 0
+  targetValue: 0
 --- !u!1 &1131925536 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1596357972171728719, guid: 017c2796562f1c7439a1090016840f00, type: 3}
@@ -2823,7 +2835,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8653719598885068355, guid: c198cd910d0dc284c81abb9d3bbc4c5e, type: 3}
       propertyPath: m_Name
-      value: stickman_noFace_thick
+      value: Stickman Thick
       objectReference: {fileID: 0}
     - target: {fileID: -7552582706839291426, guid: c198cd910d0dc284c81abb9d3bbc4c5e, type: 3}
       propertyPath: m_LocalPosition.x
