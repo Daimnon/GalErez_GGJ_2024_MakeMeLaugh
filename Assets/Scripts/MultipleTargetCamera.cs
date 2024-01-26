@@ -7,6 +7,7 @@ public class MultipleTargetCamera : MonoBehaviour
     [SerializeField] private Camera _mainCam;
     [SerializeField] private List<Transform> _targets;
     [SerializeField] private Vector3 _offset = Vector3.zero;
+    [SerializeField] private float _cameraYPos = 0.0f;
     [SerializeField] private float _smoothTime = 0.5f;
     [SerializeField] private float _minZoom = 40.0f, _maxZoom = 10.0f, _zoomTime = 20.0f;
 
@@ -39,6 +40,7 @@ public class MultipleTargetCamera : MonoBehaviour
     private void MoveSmoothly()
     {
         Vector3 centerPoint = GetCenterPoint();
+        centerPoint.y = _cameraYPos;
         Vector3 newPos = centerPoint + _offset;
         transform.position = Vector3.SmoothDamp(transform.position, newPos, ref _velocity, _smoothTime);
     }
