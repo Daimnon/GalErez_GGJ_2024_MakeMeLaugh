@@ -29,8 +29,6 @@ public class MultipleTargetCamera : MonoBehaviour
 
         MoveSmoothly();
         Zoom();
-
-        Debug.Log(_camVelocity);
     }
 
     private Vector3 GetCenterPoint()

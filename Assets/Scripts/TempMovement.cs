@@ -11,6 +11,7 @@ public class TempMovement : MonoBehaviour
     [SerializeField] private HingeJoint2D _leftArmHJ2D, _rightArmHJ2D;
     [SerializeField] private SpriteRenderer _face;
     [SerializeField] private Sprite[] _faceSprites;
+    [SerializeField] private Grab _leftGrab, _rightGrab;
 
     [Header("Input & Stats")]
     [Range(1000.0f, 2000.0f)][SerializeField] private float _speed = 1500.0f;
@@ -132,6 +133,20 @@ public class TempMovement : MonoBehaviour
             StraightenArmsLeft();
         else if (Input.GetKeyUp(KeyCode.Q))
             LimpHands();
+
+        if (_isGrabbing)
+        {
+            _leftGrab.IsHolding = true;
+            _rightGrab.IsHolding = true;
+        }
+        else
+        {
+            _leftGrab.IsHolding = false;
+            _rightGrab.IsHolding = false;
+
+            Destroy(_leftGrab.TempFJ2D);
+            Destroy(_rightGrab.TempFJ2D);
+        }
     }
 
     private void HandleEmotes()
