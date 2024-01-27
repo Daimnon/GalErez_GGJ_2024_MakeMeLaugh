@@ -169,7 +169,10 @@ public class PlayerController : MonoBehaviour
         Vector2 groundCheckPos = _rb2D.position;
         groundCheckPos.y -= _groundCheckOffset;
 
-        _isGrounded = Physics2D.OverlapCircle(groundCheckPos, _groundCheckRadius, _groundLayer);
+        if (!_isGrabbing)
+            _isGrounded = Physics2D.OverlapCircle(groundCheckPos, _groundCheckRadius, _groundLayer);
+        else
+            _isGrounded = true;
     }
 
     private void LimpHands()

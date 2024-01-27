@@ -1597,8 +1597,8 @@ MonoBehaviour:
   - {fileID: 1444188109, guid: c275a461e90c4624b8395787f248101f, type: 3}
   _leftGrab: {fileID: 3711840297719851418}
   _rightGrab: {fileID: 6483913272536896782}
-  _speed: 1500
-  _jumpForce: 250
+  _speed: 2000
+  _jumpForce: 150
   _gravity: 9180
   _emoteTime: 2
   _stepWait: 0.5

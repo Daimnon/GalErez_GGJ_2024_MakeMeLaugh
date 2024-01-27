@@ -5,6 +5,7 @@ using UnityEngine;
 public class IgnoreCollisions : MonoBehaviour
 {
     [SerializeField] private Collider2D[] _colliders;
+    public Collider2D[] Coliders => _colliders;
 
     private void Start()
     {
