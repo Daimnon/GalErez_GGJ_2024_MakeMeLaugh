@@ -59,10 +59,6 @@ public class PlayerController : MonoBehaviour
     {
         Init();
     }
-    private void Update()
-    {
-        //HandleGrabs();
-    }
     private void FixedUpdate()
     {
         HandleGroundCheck();
