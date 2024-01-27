@@ -48,12 +48,13 @@ public class PlayerSetupManager : MonoBehaviour
 
         Transform playerTr = playerInput.transform;
         playerTr.position = _spawnsTr[_players.Count - 1].position;
-        _mTC.Targets.Add(playerTr);
+
+        _mTC.Targets.Add(playerTr.GetComponent<PlayerController>().Rb2D.transform);
     }
     private void OnPlayerLeft(PlayerInput playerInput)
     {
         Debug.Log($"Player {playerInput.playerIndex} has left!");
-        _mTC.Targets.Remove(playerInput.transform);
+        _mTC.Targets.Remove(playerInput.GetComponent<PlayerController>().Rb2D.transform);
         _players.Remove(playerInput);
 
     }

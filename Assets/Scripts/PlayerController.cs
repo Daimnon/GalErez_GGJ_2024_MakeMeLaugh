@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
@@ -13,6 +12,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private SpriteRenderer _face;
     [SerializeField] private Sprite[] _faceSprites;
     [SerializeField] private Grab _leftGrab, _rightGrab;
+
+    public Rigidbody2D Rb2D => _rb2D;
 
     [Header("Input & Stats")]
     [SerializeField] private PlayerInput _inputMap;
@@ -53,7 +54,7 @@ public class PlayerController : MonoBehaviour
     }
     private void Update()
     {
-        HandleGrabs();
+        //HandleGrabs();
     }
     private void FixedUpdate()
     {
@@ -61,6 +62,10 @@ public class PlayerController : MonoBehaviour
 
         if (!_isGrounded)
             _rb2D.AddForce(_gravity * Time.deltaTime * Vector2.down);
+    }
+    private void OnDestroy()
+    {
+        _inputMap.onActionTriggered -= OnActionTriggered;
     }
 
     private void OnMove(InputAction.CallbackContext input)
@@ -169,18 +174,30 @@ public class PlayerController : MonoBehaviour
         _leftArmHJ2D.limits = _limpLeftArmLimits;
         _rightArmHJ2D.limits = _limpRightArmLimits;
         _isGrabbing = false;
+
+        _leftGrab.IsHolding = false;
+        _rightGrab.IsHolding = false;
+
+        Destroy(_leftGrab.TempFJ2D);
+        Destroy(_rightGrab.TempFJ2D);
     }
     private void StraightenArmsLeft()
     {
         _leftArmHJ2D.limits = _straightenLeftArmToLeft;
         _rightArmHJ2D.limits = _straightenRightArmToLeft;
         _isGrabbing = true;
+
+        _leftGrab.IsHolding = true;
+        _rightGrab.IsHolding = true;
     }
     private void StraightenArmsRight()
     {
         _leftArmHJ2D.limits = _straightenLeftArmToRight;
         _rightArmHJ2D.limits = _straightenRightArmToRight;
         _isGrabbing = true;
+
+        _leftGrab.IsHolding = true;
+        _rightGrab.IsHolding = true;
     }
     private void HandleGrabs()
     {

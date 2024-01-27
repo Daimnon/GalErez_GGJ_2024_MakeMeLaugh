@@ -22,9 +22,20 @@ public class Grab : MonoBehaviour
 
             if (_otherRb2D)
             {
+                if (_tempFJ2D)
+                    Destroy(_tempFJ2D);
+
+                /*if (TryGetComponent(out FixedJoint2D leftoverJoint))
+                    Destroy(leftoverJoint);*/
+
                 _tempFJ2D = transform.gameObject.AddComponent<FixedJoint2D>();
                 _tempFJ2D.connectedBody = _otherRb2D;
             }
+        }
+        else
+        {
+            if (_tempFJ2D)
+                Destroy(_tempFJ2D);
         }
     }
 }
