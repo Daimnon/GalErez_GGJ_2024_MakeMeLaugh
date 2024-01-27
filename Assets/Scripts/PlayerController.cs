@@ -7,13 +7,20 @@ public class PlayerController : MonoBehaviour
 {
     [Header("Components")]
     [SerializeField] private Animator _animator;
-    [SerializeField] private Rigidbody2D _rb2D, _leftLegRb2D, _rightLegRb2D;
     [SerializeField] private HingeJoint2D _leftArmHJ2D, _rightArmHJ2D;
-    [SerializeField] private SpriteRenderer _face;
+
+    [SerializeField] private Rigidbody2D _rb2D, _leftLegRb2D, _rightLegRb2D;
+    public Rigidbody2D Rb2D => _rb2D;
+
+    [SerializeField] private SpriteRenderer _faceRenderer;
+    public SpriteRenderer FaceRenderer => _faceRenderer;
+
+    [SerializeField] private SpriteRenderer[] _allRenderersButFace;
+    public SpriteRenderer[] AllRenderersButFace => _allRenderersButFace;
+
     [SerializeField] private Sprite[] _faceSprites;
     [SerializeField] private Grab _leftGrab, _rightGrab;
 
-    public Rigidbody2D Rb2D => _rb2D;
 
     [Header("Input & Stats")]
     [SerializeField] private PlayerInput _inputMap;
@@ -76,13 +83,13 @@ public class PlayerController : MonoBehaviour
         {
             if (_moveInput.x < 0)
             {
-                _face.flipX = true;
+                _faceRenderer.flipX = true;
                 _animator.Play(_walkLeftAnimationName);
                 StartCoroutine(MoveLeftSequence(_stepWait));
             }
             else
             {
-                _face.flipX = false;
+                _faceRenderer.flipX = false;
                 _animator.Play(_walkRightAnimationName);
                 StartCoroutine(MoveRightSequence(_stepWait));
             }
@@ -233,11 +240,11 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator DoFaceEmote(int faceIndex)
     {
-        _face.sprite = _faceSprites[faceIndex];
+        _faceRenderer.sprite = _faceSprites[faceIndex];
         _isEmoting = true;
         yield return new WaitForSeconds(_emoteTime);
 
-        _face.sprite = _faceSprites[0];
+        _faceRenderer.sprite = _faceSprites[0];
         _isEmoting = false;
     }
 }

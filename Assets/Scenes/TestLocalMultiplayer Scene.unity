@@ -715,6 +715,11 @@ MonoBehaviour:
   _players: []
   _mTC: {fileID: 125045906}
   _playerInputManager: {fileID: 1830417361}
+  _colors:
+  - {r: 0, g: 0.76923084, b: 1, a: 1}
+  - {r: 0.059822544, g: 0.7264151, b: 0, a: 1}
+  - {r: 1, g: 0.7256097, b: 0, a: 1}
+  - {r: 0.7830189, g: 0, b: 0.6367924, a: 1}
 --- !u!1 &1953105457
 GameObject:
   m_ObjectHideFlags: 0

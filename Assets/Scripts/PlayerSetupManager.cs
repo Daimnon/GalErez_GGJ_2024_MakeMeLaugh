@@ -21,6 +21,8 @@ public class PlayerSetupManager : MonoBehaviour
     [SerializeField] private PlayerInputManager _playerInputManager;
     public PlayerInputManager PlayerInputManager => _playerInputManager;
 
+    [ColorUsage(true, true)][SerializeField] private Color[] _colors;
+
     private void Awake()
     {
         if (_instance != null && _instance != this)
@@ -49,14 +51,19 @@ public class PlayerSetupManager : MonoBehaviour
         Transform playerTr = playerInput.transform;
         playerTr.position = _spawnsTr[_players.Count - 1].position;
 
-        _mTC.Targets.Add(playerTr.GetComponent<PlayerController>().Rb2D.transform);
+        PlayerController playerController = playerTr.GetComponent<PlayerController>();
+        playerController.FaceRenderer.color = _colors[playerInput.playerIndex];
+
+        for (int i = 0; i < playerController.AllRenderersButFace.Length; i++)
+            playerController.AllRenderersButFace[i].color = _colors[playerInput.playerIndex];
+
+        _mTC.Targets.Add(playerController.Rb2D.transform);
     }
     private void OnPlayerLeft(PlayerInput playerInput)
     {
         Debug.Log($"Player {playerInput.playerIndex} has left!");
         _mTC.Targets.Remove(playerInput.GetComponent<PlayerController>().Rb2D.transform);
         _players.Remove(playerInput);
-
     }
     #endregion
 }
