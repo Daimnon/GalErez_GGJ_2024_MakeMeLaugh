@@ -25,6 +25,8 @@ public class PlayerController : MonoBehaviour
     [Header("Input & Stats")]
     [SerializeField] private PlayerInput _inputMap;
     [Range(1000.0f, 2000.0f)][SerializeField] private float _speed = 1500.0f;
+    [Range(1000.0f, 2000.0f)][SerializeField] private float _currentSpeed = 1500.0f;
+    [Range(2000.0f, 5000.0f)][SerializeField] private float _ropeSpeed = 5000.0f;
     [Range(50.0f, 250.0f)][SerializeField] private float _jumpForce = 150.0f;
     [Range(1000.0f, 10000.0f)][SerializeField] private float _gravity = 9180.0f;
     [Range(0.0f, 5.0f)][SerializeField] private float _emoteTime = 2.0f;
@@ -35,6 +37,7 @@ public class PlayerController : MonoBehaviour
     private Vector2 _moveInput = Vector2.zero;
     private Vector2 _dPadInput = Vector2.zero;
     private bool _isGrabbing = false;
+    private bool _isSwinging = false, _isRightSwing = false, _isLeftSwing = false;
     private bool _isEmoting = false;
 
     [Header("Animation")]
@@ -65,6 +68,14 @@ public class PlayerController : MonoBehaviour
 
         if (!_isGrounded)
             _rb2D.AddForce(_gravity * Time.deltaTime * Vector2.down);
+
+        if (_isSwinging)
+        {
+            if (_isLeftSwing)
+                SwingLeft();
+            else if (_isRightSwing)
+                SwingRight();
+        }
     }
     private void OnDestroy()
     {
@@ -75,8 +86,13 @@ public class PlayerController : MonoBehaviour
     {
         _moveInput = input.ReadValue<Vector2>();
 
-        if (_moveInput.x != 0)
+        if (!_isGrabbing && _moveInput.x != 0)
         {
+            //_currentSpeed = _speed;
+            _isSwinging = false;
+            _isLeftSwing = false;
+            _isRightSwing = false;
+
             if (_moveInput.x < 0)
             {
                 _faceRenderer.flipX = true;
@@ -88,6 +104,24 @@ public class PlayerController : MonoBehaviour
                 _faceRenderer.flipX = false;
                 _animator.Play(_walkRightAnimationName);
                 StartCoroutine(MoveRightSequence(_stepWait));
+            }
+        }
+        else if (_leftGrab.IsHolding || _rightGrab.IsHolding)
+        {
+            _isSwinging = true;
+            _animator.Play("anim_idle");
+
+            if (_moveInput.x < 0)
+            {
+                _isRightSwing = false;
+                _faceRenderer.flipX = true;
+                _isLeftSwing = true;
+            }
+            else
+            {
+                _isLeftSwing = false;
+                _faceRenderer.flipX = false;
+                _isRightSwing = true;
             }
         }
         else
@@ -169,7 +203,7 @@ public class PlayerController : MonoBehaviour
         Vector2 groundCheckPos = _rb2D.position;
         groundCheckPos.y -= _groundCheckOffset;
 
-        if (!_isGrabbing)
+        if (!_isSwinging)
             _isGrounded = Physics2D.OverlapCircle(groundCheckPos, _groundCheckRadius, _groundLayer);
         else
             _isGrounded = true;
@@ -222,19 +256,30 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void SwingRight()
+    {
+        _rightLegRb2D.AddForce(_currentSpeed * Time.fixedDeltaTime * Vector2.right);
+        _leftLegRb2D.AddForce(_currentSpeed * Time.fixedDeltaTime * Vector2.right);
+    }
+    private void SwingLeft()
+    {
+        _rightLegRb2D.AddForce(_currentSpeed * Time.fixedDeltaTime * Vector2.left);
+        _leftLegRb2D.AddForce(_currentSpeed * Time.fixedDeltaTime * Vector2.left);
+    }
+
     private IEnumerator MoveLeftSequence(float sec)
     {
-        _rightLegRb2D.AddForce(_speed * Time.fixedDeltaTime * Vector2.left);
+        _rightLegRb2D.AddForce(_currentSpeed * Time.fixedDeltaTime * Vector2.left);
         yield return new WaitForSeconds(sec);
 
-        _leftLegRb2D.AddForce(_speed * Time.fixedDeltaTime * Vector2.left);
+        _leftLegRb2D.AddForce(_currentSpeed * Time.fixedDeltaTime * Vector2.left);
     }
     private IEnumerator MoveRightSequence(float sec)
     {
-        _leftLegRb2D.AddForce(_speed * Time.fixedDeltaTime * Vector2.right);
+        _leftLegRb2D.AddForce(_currentSpeed * Time.fixedDeltaTime * Vector2.right);
         yield return new WaitForSeconds(sec);
 
-        _rightLegRb2D.AddForce(_speed * Time.fixedDeltaTime * Vector2.right);
+        _rightLegRb2D.AddForce(_currentSpeed * Time.fixedDeltaTime * Vector2.right);
     }
 
     private IEnumerator DoFaceEmote(int faceIndex)
