@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
-public class TempMovement : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     [Header("Components")]
     [SerializeField] private Animator _animator;
@@ -14,12 +15,17 @@ public class TempMovement : MonoBehaviour
     [SerializeField] private Grab _leftGrab, _rightGrab;
 
     [Header("Input & Stats")]
+    [SerializeField] private PlayerInput _inputMap;
     [Range(1000.0f, 2000.0f)][SerializeField] private float _speed = 1500.0f;
     [Range(50.0f, 250.0f)][SerializeField] private float _jumpForce = 150.0f;
     [Range(1000.0f, 10000.0f)][SerializeField] private float _gravity = 9180.0f;
     [Range(0.0f, 5.0f)][SerializeField] private float _emoteTime = 2.0f;
 
-    private float _xInput = 0;
+    private PlayerControls _controls;
+    public PlayerControls Controls => _controls;
+
+    private Vector2 _moveInput = Vector2.zero;
+    private Vector2 _dPadInput = Vector2.zero;
     private bool _isGrabbing = false;
     private bool _isEmoting = false;
 
@@ -36,43 +42,34 @@ public class TempMovement : MonoBehaviour
     [Range(6, 10)][SerializeField] private float _groundCheckOffset = 9.3f;
     [SerializeField] private bool _isGrounded;
 
+    private void Awake()
+    {
+        _controls = new PlayerControls();
+        _inputMap.onActionTriggered += OnActionTriggered;
+    }
     private void Start()
     {
         Init();
     }
-
     private void Update()
     {
-        _xInput = Input.GetAxisRaw("Horizontal");
-
-        HandleJumps();
         HandleGrabs();
-        HandleEmotes();
     }
-
     private void FixedUpdate()
     {
-        HandleMovement();
         HandleGroundCheck();
+
+        if (!_isGrounded)
+            _rb2D.AddForce(_gravity * Time.deltaTime * Vector2.down);
     }
 
-    private void Init()
+    private void OnMove(InputAction.CallbackContext input)
     {
-        _limpLeftArmLimits = _leftArmHJ2D.limits;
-        _limpRightArmLimits = _rightArmHJ2D.limits;
+        _moveInput = input.ReadValue<Vector2>();
 
-        _straightenLeftArmToRight.min = _straightenLeftArmToRight.max = -180.0f;
-        _straightenLeftArmToLeft.min = _straightenLeftArmToLeft.max = 0.0f;
-
-        _straightenRightArmToRight.min = _straightenRightArmToRight.max = 0.0f;
-        _straightenRightArmToLeft.min = _straightenRightArmToLeft.max = 180.0f;
-    }
-
-    private void HandleMovement()
-    {
-        if (_xInput != 0)
+        if (_moveInput.x != 0)
         {
-            if (_xInput < 0)
+            if (_moveInput.x < 0)
             {
                 _face.flipX = true;
                 _animator.Play(_walkLeftAnimationName);
@@ -88,6 +85,76 @@ public class TempMovement : MonoBehaviour
         else
             _animator.Play("anim_idle");
     }
+    private void OnJump(InputAction.CallbackContext input)
+    {
+        if (_isGrounded && input.action.WasPressedThisFrame())
+            _rb2D.AddForce(Vector2.up * _jumpForce, ForceMode2D.Impulse);
+    }
+    private void OnLGrab(InputAction.CallbackContext input)
+    {
+        if (input.action.WasPressedThisFrame())
+            StraightenArmsLeft();
+        else if (input.action.WasReleasedThisFrame())
+            LimpHands();
+    }
+    private void OnRGrab(InputAction.CallbackContext input)
+    {
+        if (input.action.WasPressedThisFrame())
+            StraightenArmsRight();
+        else if (input.action.WasReleasedThisFrame())
+            LimpHands();
+    }
+    private void OnEmote1(InputAction.CallbackContext input)
+    { 
+        if (input.action.WasPressedThisFrame())
+            StartCoroutine(DoFaceEmote(3));
+    }
+    private void OnEmote2(InputAction.CallbackContext input)
+    {
+        if (input.action.WasPressedThisFrame())
+            StartCoroutine(DoFaceEmote(2));
+    }
+    private void OnEmote3(InputAction.CallbackContext input)
+    {
+        if (input.action.WasPressedThisFrame())
+            StartCoroutine(DoFaceEmote(1));
+    }
+
+    private void OnActionTriggered(InputAction.CallbackContext input)
+    {
+        if (input.action.name == _controls.Player.Move.name)
+            OnMove(input);
+
+        if (input.action.name == _controls.Player.Jump.name)
+            OnJump(input);
+
+        if (input.action.name == _controls.Player.LGrab.name)
+            OnLGrab(input);
+        else if (input.action.name == _controls.Player.RGrab.name)
+            OnRGrab(input);
+
+        if (_isEmoting)
+            return;
+
+        if (input.action.name == _controls.Player.Emote1.name)
+            OnEmote1(input);
+        else if (input.action.name == _controls.Player.Emote2.name)
+            OnEmote2(input);
+        else if (input.action.name == _controls.Player.Emote3.name)
+            OnEmote3(input);
+    }
+
+    private void Init()
+    {
+        _limpLeftArmLimits = _leftArmHJ2D.limits;
+        _limpRightArmLimits = _rightArmHJ2D.limits;
+
+        _straightenLeftArmToRight.min = _straightenLeftArmToRight.max = -180.0f;
+        _straightenLeftArmToLeft.min = _straightenLeftArmToLeft.max = 0.0f;
+
+        _straightenRightArmToRight.min = _straightenRightArmToRight.max = 0.0f;
+        _straightenRightArmToLeft.min = _straightenRightArmToLeft.max = 180.0f;
+    }
 
     private void HandleGroundCheck()
     {
@@ -95,13 +162,6 @@ public class TempMovement : MonoBehaviour
         groundCheckPos.y -= _groundCheckOffset;
 
         _isGrounded = Physics2D.OverlapCircle(groundCheckPos, _groundCheckRadius, _groundLayer);
-    }
-    private void HandleJumps()
-    {
-        if (_isGrounded && Input.GetKeyDown(KeyCode.Space))
-            _rb2D.AddForce(Vector2.up * _jumpForce, ForceMode2D.Impulse);
-        else if (!_isGrounded)
-            _rb2D.AddForce(_gravity * Time.deltaTime * Vector2.down);
     }
 
     private void LimpHands()
@@ -124,16 +184,6 @@ public class TempMovement : MonoBehaviour
     }
     private void HandleGrabs()
     {
-        if (Input.GetKeyDown(KeyCode.E))
-            StraightenArmsRight();
-        else if (Input.GetKeyUp(KeyCode.E))
-            LimpHands();
-
-        if (Input.GetKeyDown(KeyCode.Q))
-            StraightenArmsLeft();
-        else if (Input.GetKeyUp(KeyCode.Q))
-            LimpHands();
-
         if (_isGrabbing)
         {
             _leftGrab.IsHolding = true;
@@ -147,19 +197,6 @@ public class TempMovement : MonoBehaviour
             Destroy(_leftGrab.TempFJ2D);
             Destroy(_rightGrab.TempFJ2D);
         }
-    }
-
-    private void HandleEmotes()
-    {
-        if (_isEmoting)
-            return;
-
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-            StartCoroutine(DoFaceEmote(3));
-        else if (Input.GetKeyDown(KeyCode.Alpha2))
-            StartCoroutine(DoFaceEmote(2));
-        else if (Input.GetKeyDown(KeyCode.Alpha3))
-            StartCoroutine(DoFaceEmote(1));
     }
 
     private IEnumerator MoveLeftSequence(float sec)

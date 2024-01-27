@@ -8,7 +8,7 @@ public class MultipleTargetCamera : MonoBehaviour
     [SerializeField] private Camera _mainCam;
     public Camera MainCam => _mainCam;
 
-    [SerializeField] private List<Transform> _targets;
+    [SerializeField] private List<Transform> _targets = new();
     public List<Transform> Targets => _targets;
 
     [Header("Offset")]
