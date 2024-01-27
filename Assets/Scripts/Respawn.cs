@@ -21,13 +21,14 @@ public class Respawn : MonoBehaviour
         Rigidbody2D playerBodyRb2D = playerController.Rb2D;
         Vector3 startPosition = playerBodyRb2D.position;
 
-        //playerController.gameObject.SetActive(false);
         IgnoreCollisions ignoreC = playerController.GetComponent<IgnoreCollisions>();
 
         for (int i = 0; i < ignoreC.Coliders.Length; i++)
         {
+            Rigidbody2D currentRb2D = ignoreC.Coliders[i].GetComponent<Rigidbody2D>();
             ignoreC.Coliders[i].isTrigger = true;
-            ignoreC.Coliders[i].GetComponent<Rigidbody2D>().isKinematic = true;
+            currentRb2D.isKinematic = true;
+            currentRb2D.velocity = Vector2.zero;
         }
 
         while (time < duration)
@@ -45,11 +46,10 @@ public class Respawn : MonoBehaviour
 
         for (int i = 0; i < ignoreC.Coliders.Length; i++)
         {
+            Rigidbody2D currentRb2D = ignoreC.Coliders[i].GetComponent<Rigidbody2D>();
+            currentRb2D.velocity = Vector2.zero;
+            currentRb2D.isKinematic = false;
             ignoreC.Coliders[i].isTrigger = false;
-            ignoreC.Coliders[i].GetComponent<Rigidbody2D>().isKinematic = false;
         }
-
-        //playerController.gameObject.SetActive(true);
-
     }
 }

@@ -1920,7 +1920,6 @@ MonoBehaviour:
   _rb2D: {fileID: 1867135442386161326}
   _leftLegRb2D: {fileID: 6561049251072024904}
   _rightLegRb2D: {fileID: 1747425904133566056}
-  _headRb2D: {fileID: 8543533691460455319}
   _faceRenderer: {fileID: 2175559191127861091}
   _allRenderersButFace:
   - {fileID: 8629557014241741790}
@@ -1942,7 +1941,9 @@ MonoBehaviour:
   _rightGrab: {fileID: 6271647093028779607}
   _inputMap: {fileID: 1738803699335352832}
   _speed: 2000
-  _jumpForce: 150
+  _currentSpeed: 1500
+  _ropeSpeed: 5000
+  _jumpForce: 100
   _gravity: 9180
   _emoteTime: 2
   _stepWait: 0.5

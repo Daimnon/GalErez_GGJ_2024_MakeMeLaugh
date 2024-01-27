@@ -25,8 +25,6 @@ public class PlayerController : MonoBehaviour
     [Header("Input & Stats")]
     [SerializeField] private PlayerInput _inputMap;
     [Range(1000.0f, 2000.0f)][SerializeField] private float _speed = 1500.0f;
-    [Range(1000.0f, 2000.0f)][SerializeField] private float _currentSpeed = 1500.0f;
-    [Range(2000.0f, 5000.0f)][SerializeField] private float _ropeSpeed = 5000.0f;
     [Range(50.0f, 250.0f)][SerializeField] private float _jumpForce = 150.0f;
     [Range(1000.0f, 10000.0f)][SerializeField] private float _gravity = 9180.0f;
     [Range(0.0f, 5.0f)][SerializeField] private float _emoteTime = 2.0f;
@@ -258,28 +256,28 @@ public class PlayerController : MonoBehaviour
 
     private void SwingRight()
     {
-        _rightLegRb2D.AddForce(_currentSpeed * Time.fixedDeltaTime * Vector2.right);
-        _leftLegRb2D.AddForce(_currentSpeed * Time.fixedDeltaTime * Vector2.right);
+        _rightLegRb2D.AddForce(_speed * Time.fixedDeltaTime * Vector2.right);
+        _leftLegRb2D.AddForce(_speed * Time.fixedDeltaTime * Vector2.right);
     }
     private void SwingLeft()
     {
-        _rightLegRb2D.AddForce(_currentSpeed * Time.fixedDeltaTime * Vector2.left);
-        _leftLegRb2D.AddForce(_currentSpeed * Time.fixedDeltaTime * Vector2.left);
+        _rightLegRb2D.AddForce(_speed * Time.fixedDeltaTime * Vector2.left);
+        _leftLegRb2D.AddForce(_speed * Time.fixedDeltaTime * Vector2.left);
     }
 
     private IEnumerator MoveLeftSequence(float sec)
     {
-        _rightLegRb2D.AddForce(_currentSpeed * Time.fixedDeltaTime * Vector2.left);
+        _rightLegRb2D.AddForce(_speed * Time.fixedDeltaTime * Vector2.left);
         yield return new WaitForSeconds(sec);
 
-        _leftLegRb2D.AddForce(_currentSpeed * Time.fixedDeltaTime * Vector2.left);
+        _leftLegRb2D.AddForce(_speed * Time.fixedDeltaTime * Vector2.left);
     }
     private IEnumerator MoveRightSequence(float sec)
     {
-        _leftLegRb2D.AddForce(_currentSpeed * Time.fixedDeltaTime * Vector2.right);
+        _leftLegRb2D.AddForce(_speed * Time.fixedDeltaTime * Vector2.right);
         yield return new WaitForSeconds(sec);
 
-        _rightLegRb2D.AddForce(_currentSpeed * Time.fixedDeltaTime * Vector2.right);
+        _rightLegRb2D.AddForce(_speed * Time.fixedDeltaTime * Vector2.right);
     }
 
     private IEnumerator DoFaceEmote(int faceIndex)
