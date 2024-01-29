@@ -218,6 +218,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84cc509c9ffc06e4899da9600e2d7ea3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerController: {fileID: 0}
 --- !u!1 &5199533733535166089
 GameObject:
   m_ObjectHideFlags: 0
@@ -352,6 +353,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84cc509c9ffc06e4899da9600e2d7ea3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerController: {fileID: 0}
 --- !u!1001 &8682921905927124528
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -980,8 +982,8 @@ HingeJoint2D:
   m_BreakTorque: Infinity
   m_BreakAction: 3
   m_AutoConfigureConnectedAnchor: 0
-  m_Anchor: {x: 0, y: -1.15}
-  m_ConnectedAnchor: {x: -0.00000028106425, y: 3.0549998}
+  m_Anchor: {x: 0, y: -1.47}
+  m_ConnectedAnchor: {x: 0.0000004559098, y: 2.7350001}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -1796,8 +1798,8 @@ HingeJoint2D:
   m_BreakTorque: Infinity
   m_BreakAction: 3
   m_AutoConfigureConnectedAnchor: 0
-  m_Anchor: {x: 0, y: -1.15}
-  m_ConnectedAnchor: {x: -0.00000028106425, y: 3.0549998}
+  m_Anchor: {x: 0, y: -1.47}
+  m_ConnectedAnchor: {x: 0.0000004559098, y: 2.7350001}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -1940,9 +1942,7 @@ MonoBehaviour:
   _leftGrab: {fileID: 2566451330664685705}
   _rightGrab: {fileID: 6271647093028779607}
   _inputMap: {fileID: 1738803699335352832}
-  _speed: 2000
-  _currentSpeed: 1500
-  _ropeSpeed: 5000
+  _speed: 2
   _jumpForce: 100
   _gravity: 9180
   _emoteTime: 2

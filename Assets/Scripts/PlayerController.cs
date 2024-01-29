@@ -24,7 +24,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Input & Stats")]
     [SerializeField] private PlayerInput _inputMap;
-    [Range(1000.0f, 2000.0f)][SerializeField] private float _speed = 1500.0f;
+    [Range(0.0f, 10.0f)][SerializeField] private float _speed = 1.0f;
     [Range(50.0f, 250.0f)][SerializeField] private float _jumpForce = 150.0f;
     [Range(1000.0f, 10000.0f)][SerializeField] private float _gravity = 9180.0f;
     [Range(0.0f, 5.0f)][SerializeField] private float _emoteTime = 2.0f;
@@ -74,6 +74,20 @@ public class PlayerController : MonoBehaviour
             else if (_isRightSwing)
                 SwingRight();
         }
+
+        bool shouldStopSwingingLeft = false, shouldStopSwingingRight = false;
+
+        if (_leftGrab.TempFJ2D && !_leftGrab.TempFJ2D.attachedRigidbody || !_leftGrab.TempFJ2D)
+            shouldStopSwingingLeft = true;
+        if (_rightGrab.TempFJ2D && !_rightGrab.TempFJ2D.attachedRigidbody || !_rightGrab.TempFJ2D)
+            shouldStopSwingingRight = true;
+
+        if (shouldStopSwingingLeft && shouldStopSwingingRight)
+        {
+            _isSwinging = false;
+            _isRightSwing = false;
+            _isLeftSwing = false;
+        }
     }
     private void OnDestroy()
     {
@@ -84,9 +98,8 @@ public class PlayerController : MonoBehaviour
     {
         _moveInput = input.ReadValue<Vector2>();
 
-        if (!_isGrabbing && _moveInput.x != 0)
+        if (!_leftGrab.OtherRb2D && !_rightGrab.OtherRb2D && _moveInput.x != 0)
         {
-            //_currentSpeed = _speed;
             _isSwinging = false;
             _isLeftSwing = false;
             _isRightSwing = false;
@@ -104,7 +117,7 @@ public class PlayerController : MonoBehaviour
                 StartCoroutine(MoveRightSequence(_stepWait));
             }
         }
-        else if (_leftGrab.IsHolding || _rightGrab.IsHolding)
+        else if (_leftGrab.OtherRb2D || _rightGrab.OtherRb2D)
         {
             _isSwinging = true;
             _animator.Play("anim_idle");
@@ -203,8 +216,6 @@ public class PlayerController : MonoBehaviour
 
         if (!_isSwinging)
             _isGrounded = Physics2D.OverlapCircle(groundCheckPos, _groundCheckRadius, _groundLayer);
-        else
-            _isGrounded = true;
     }
 
     private void LimpHands()
@@ -267,17 +278,17 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator MoveLeftSequence(float sec)
     {
-        _rightLegRb2D.AddForce(_speed * Time.fixedDeltaTime * Vector2.left);
+        _rightLegRb2D.AddForce(_speed * Time.fixedDeltaTime * Vector2.left, ForceMode2D.Impulse);
         yield return new WaitForSeconds(sec);
 
-        _leftLegRb2D.AddForce(_speed * Time.fixedDeltaTime * Vector2.left);
+        _leftLegRb2D.AddForce(_speed * Time.fixedDeltaTime * Vector2.left, ForceMode2D.Impulse);
     }
     private IEnumerator MoveRightSequence(float sec)
     {
-        _leftLegRb2D.AddForce(_speed * Time.fixedDeltaTime * Vector2.right);
+        _leftLegRb2D.AddForce(_speed * Vector2.right, ForceMode2D.Impulse);
         yield return new WaitForSeconds(sec);
 
-        _rightLegRb2D.AddForce(_speed * Time.fixedDeltaTime * Vector2.right);
+        _rightLegRb2D.AddForce(_speed * Vector2.right, ForceMode2D.Impulse);
     }
 
     private IEnumerator DoFaceEmote(int faceIndex)
